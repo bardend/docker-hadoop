@@ -1,0 +1,30 @@
+<configuration>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>${MAPREDUCE_FRAMEWORK:-yarn}</value>
+    </property>
+    <property>
+        <name>mapreduce.jobhistory.address</name>
+        <value>${HISTORYSERVER_HOST:-localhost}:${HISTORYSERVER_PORT:-10020}</value>
+    </property>
+    <property>
+        <name>mapreduce.jobhistory.webapp.address</name>
+        <value>${HISTORYSERVER_HOST:-localhost}:${HISTORYSERVER_WEBAPP_PORT:-19888}</value>
+    </property>
+    <property>
+        <name>mapreduce.map.memory.mb</name>
+        <value>${MAPREDUCE_MAP_MEMORY:-512}</value>
+    </property>
+    <property>
+        <name>mapreduce.reduce.memory.mb</name>
+        <value>${MAPREDUCE_REDUCE_MEMORY:-512}</value>
+    </property>
+    <property>
+        <name>mapreduce.map.java.opts</name>
+        <value>-Xmx${MAPREDUCE_MAP_JAVA_OPTS:-409}m</value>
+    </property>
+    <property>
+        <name>mapreduce.reduce.java.opts</name>
+        <value>-Xmx${MAPREDUCE_REDUCE_JAVA_OPTS:-409}m</value>
+    </property>
+</configuration>
