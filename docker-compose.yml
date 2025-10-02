@@ -1,23 +1,25 @@
-version: '3.8'
 services:
   namenode:
     image: bardend123/hadoop-namenode:v1
+    container_name: namenode
     volumes:
       - namenode:/hadoop/dfs/name
     
     environment:
       - CLUSTER_NAME=test
+      - NAMENODE_HOST=namenode
     networks:
       - start-dfs
   
   datanode:
     image: bardend123/hadoop-datanode:v1
-  
+    container_name: datanode
     volumes:
       - datanode:/hadoop/dfs/data
   
     environment:
       - SERVICE_PRECONDITION="namenode:50070"
+      - NAMENODE_HOST=namenode
     
     networks:
       - start-dfs
