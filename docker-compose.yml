@@ -4,10 +4,12 @@ services:
     container_name: namenode
     volumes:
       - namenode:/hadoop/dfs/name
-    
+
     environment:
       - CLUSTER_NAME=test
       - NAMENODE_HOST=namenode
+      - REPLICATION_FACTOR=4
+
     networks:
       - start-dfs
   
@@ -18,8 +20,8 @@ services:
       - datanode:/hadoop/dfs/data
   
     environment:
-      - SERVICE_PRECONDITION="namenode:50070"
       - NAMENODE_HOST=namenode
+      - REPLICATION_FACTOR=4
     
     networks:
       - start-dfs

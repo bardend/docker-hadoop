@@ -6,14 +6,15 @@
         <name>dfs.replication</name>
         <value>${REPLICATION_FACTOR:-1}</value>
     </property>
+    
+    <!--Ruoute of the metadata-->
     <property>
         <name>dfs.namenode.name.dir</name>
-        <value>file:///hadoop/dfs/name</value>
+        <value>file://${NAMENODE_PATH:-/hadoop/dfs/name}</value>
     </property>
 
     <property>
         <name>dfs.datanode.data.dir</name>
-        <value>file:///hadoop/dfs/data</value>
+        <value>file://${DATANODE_PATH:-/hadoop/dfs/data}</value>
     </property>
-
 </configuration>

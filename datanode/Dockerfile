@@ -5,9 +5,6 @@ ENV HDFS_CONF_dfs_datanode_data_dir=file:///hadoop/dfs/data
 #This is volumen for data of datanode
 VOLUME /hadoop/dfs/data
 
-ENV NAMENODE_HOST=localhost
-ENV NAMENODE_PORT=9000
-
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 EXPOSE 9864

@@ -8,11 +8,16 @@ process_template() {
     local template_file=$1
     local output_file=$2
 
-    echo "Procesando→ $output_file" 
-
     if [[ -f "$template_file" ]]; then
-        envsubst < "$template_file" > "$output_file"
+        perl -pe '
+            s/\$\{(\w+):-([^}]+)\}/ 
+                my $var = $1;
+                my $default = $2;
+                exists $ENV{$var} ? $ENV{$var} : $default;
+            /gex;
+        ' "$template_file" > "$output_file"
     fi
+
 }
 
 for template in "$TEMPLATE_DIR"/*.template; do

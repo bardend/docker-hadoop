@@ -5,8 +5,10 @@ if [ -z "$CLUSTER_NAME" ]; then
     exit 2
 fi
 
-NAME_DIR="${HDFS_CONF_dfs_namenode_name_dir:-/hadoop/dfs/name}"
+NAME_DIR="${HDFS_CONF_dfs_namenode_name_dir:-file:///hadoop/dfs/name}"
+NAME_DIR="${NAME_DIR#file://}"
 
+ls -la "$NAME_DIR"
 rm -rf $NAME_DIR/lost+found
 
 if [ "$(ls -A $NAME_DIR)" == "" ]; then 
