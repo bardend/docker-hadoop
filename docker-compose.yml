@@ -11,7 +11,7 @@ services:
       - REPLICATION_FACTOR=4
 
     networks:
-      - start-dfs
+      - hadoop-network
   
   datanode:
     image: bardend123/hadoop-datanode:v1
@@ -24,12 +24,24 @@ services:
       - REPLICATION_FACTOR=4
     
     networks:
-      - start-dfs
+      - hadoop-network
     depends_on:
       - namenode
+  
+  nodemanager:
+    image: bardend123/hadoop-nodemanager:v1
+    container_name: nodemanager
+    networks:
+      - hadoop-network
+    
+  resourcemanager:
+    image: bardend123/hadoop-resourcemanager:v1
+    container_name: resourcemanager
+    networks:
+      - hadoop-network
 
 networks:
-  start-dfs:
+  hadoop-network:
 
 volumes:
   namenode:

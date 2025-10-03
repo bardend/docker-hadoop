@@ -7,6 +7,5 @@ VOLUME /hadoop/dfs/data
 
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
-EXPOSE 9864
-
+EXPOSE 9864 8042
 CMD ["/run.sh"]

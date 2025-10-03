@@ -1,0 +1,37 @@
+services:
+  master:
+    image: bardend123/hadoop-master:v1
+    container_name: master
+    hostname: master
+    volumes:
+      - namenode:/hadoop/dfs/name
+    environment:
+      - NAMENODE_HOST=master
+      - RESOURCEMANAGER_HOST=master
+      - REPLICATION_FACTOR=3
+      - YARN_HOST=master
+      - CLUSTER_NAME=master
+      - WORKERS=worker
+    networks:
+      - hadoop-network
+
+  worker:
+    image: bardend123/hadoop-worker:v1
+    container_name: worker
+    hostname: worker
+    volumes:
+      - datanode:/hadoop/dfs/data  # Volumen anónimo para cada worker
+    environment:
+      - NAMENODE_HOST=master
+      - RESOURCEMANAGER_HOST=master
+      - REPLICATION_FACTOR=3
+      - YARN_HOST=master
+    depends_on:
+      - master
+    networks:
+      - hadoop-network
+networks:
+  hadoop-network:
+volumes:
+  namenode:
+  datanode:

@@ -1,38 +1,75 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
 <configuration>
-    <property>
-        <name>yarn.resourcemanager.hostname</name>
-        <value>localhost</value>
-    </property>
-    <property>
-        <name>yarn.resourcemanager.address</name>
-        <value>localhost:8032</value>
-    </property>
-    <property>
-        <name>yarn.resourcemanager.scheduler.address</name>
-        <value>localhost:8030</value>
-    </property>
-    <property>
-        <name>yarn.resourcemanager.webapp.address</name>
-        <value>0.0.0.0:${RESOURCEMANAGER_WEBAPP_PORT:-8088}</value>
-    </property>
-    <property>
-        <name>yarn.nodemanager.aux-services</name>
-        <value>mapreduce_shuffle</value>
-    </property>
-    <property>
-        <name>yarn.nodemanager.resource.memory-mb</name>
-        <value>${NODEMANAGER_RESOURCE_MEMORY:-1024}</value>
-    </property>
-    <property>
-        <name>yarn.nodemanager.resource.cpu-vcores</name>
-        <value>${NODEMANAGER_RESOURCE_VCORES:-1}</value>
-    </property>
-    <property>
-        <name>yarn.scheduler.maximum-allocation-mb</name>
-        <value>${YARN_SCHEDULER_MAX_MEMORY:-1024}</value>
-    </property>
-    <property>
-        <name>yarn.nodemanager.disk-health-checker.enable</name>
-        <value>false</value>
-    </property>
+
+  <!-- Configuración ResourceManager -->
+  <property>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>${YARN_HOST:-master}</value>
+  </property>
+
+  <property>
+    <name>yarn.resourcemanager.bind-host</name>
+    <value>0.0.0.0</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.bind-host</name>
+    <value>0.0.0.0</value>
+  </property>
+
+  <!-- Configuración de memoria -->
+  <property>
+    <name>yarn.nodemanager.resource.memory-mb</name>
+    <value>${YARN_NM_MEMORY_MB:-1536}</value>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.maximum-allocation-mb</name>
+    <value>${YARN_SCHEDULER_MAX_MB:-1536}</value>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.minimum-allocation-mb</name>
+    <value>${YARN_SCHEDULER_MIN_MB:-256}</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.vmem-check-enabled</name>
+    <value>false</value>
+  </property>
+
+  <!-- Direcciones del ResourceManager -->
+  <property>
+    <name>yarn.resourcemanager.address</name>
+    <value>${YARN_HOST:-Test}:${YARN_RM_ADDRESS_PORT:-8032}</value>
+  </property>
+
+  <property>
+    <name>yarn.resourcemanager.scheduler.address</name>
+    <value>${YARN_HOST:-Test}:${YARN_RM_SCHEDULER_PORT:-8030}</value>
+  </property>
+
+  <property>
+    <name>yarn.resourcemanager.resource-tracker.address</name>
+    <value>${YARN_HOST:-Test}:${YARN_RM_TRACKER_PORT:-8031}</value>
+  </property>
+
+  <property>
+    <name>yarn.resourcemanager.webapp.address</name>
+    <value>${YARN_HOST:-Test}:${YARN_RM_WEBAPP_PORT:-8088}</value>
+  </property>
+
+  <!-- Configuración crítica para MapReduce -->
+  <property>
+    <name>yarn.nodemanager.aux-services</name>
+    <value>mapreduce_shuffle</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
+    <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+  </property>
+
 </configuration>

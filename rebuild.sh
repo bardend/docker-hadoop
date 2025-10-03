@@ -7,7 +7,11 @@ echo "=== Rebuilding Hadoop Docker Images ==="
 IMAGES=(
     #"bardend123/hadoop-base:v1"
     #"bardend123/hadoop-datanode:v1"
-    "bardend123/hadoop-namenode:v1"
+    #"bardend123/hadoop-namenode:v1"
+    #"bardend123/hadoop-nodemanager:v1"
+    #"bardend123/hadoop-resourcemanager:v1"
+    #"bardend123/hadoop-master:v1"
+    "bardend123/hadoop-worker:v1"
 )
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
