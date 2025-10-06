@@ -6,12 +6,14 @@ services:
     volumes:
       - namenode:/hadoop/dfs/name
     environment:
-      - NAMENODE_HOST=master
-      - RESOURCEMANAGER_HOST=master
-      - REPLICATION_FACTOR=3
-      - YARN_HOST=master
       - CLUSTER_NAME=master
       - WORKERS=worker
+      - NAMENODE_HOST=master
+      - RESOURCEMANAGER_HOST=master
+      - REPLICATION_FACTOR=1
+      - YARN_HOST=master
+      - YARN_NM_MEMORY_MB=2048
+      - YARN_SCHEDULER_MAX_MB=2048
     networks:
       - hadoop-network
 
@@ -24,8 +26,11 @@ services:
     environment:
       - NAMENODE_HOST=master
       - RESOURCEMANAGER_HOST=master
-      - REPLICATION_FACTOR=3
+      - REPLICATION_FACTOR=1
       - YARN_HOST=master
+      - YARN_NM_MEMORY_MB=2048
+      - YARN_SCHEDULER_MAX_MB=2048
+
     depends_on:
       - master
     networks:
@@ -35,3 +40,35 @@ networks:
 volumes:
   namenode:
   datanode:
+  
+
+#root@worker:/etc/hadoop# yarn container -list application_1759714618696_0002
+#2025-10-06 02:09:42,670 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at master/172.23.0.2:8032
+#2025-10-06 02:09:42,882 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at master/172.23.0.2:8032
+#2025-10-06 02:09:42,899 INFO util.log: Logging initialized @910ms to org.eclipse.jetty.util.log.Slf4jLog
+#Failed: HTTP error code: 500 ErrorMsg: 
+#root@worker:/etc/hadoop# tail -f /opt/hadoop/logs/userlogs/application_1759714618696_0002/*/syslog
+#2025-10-06 02:09:51,436 INFO [RMCommunicator Allocator] org.apache.hadoop.mapreduce.v2.app.rm.RMContainerAllocator: Going to preempt 1 due to lack of space for maps
+
+
+#root@worker:/etc/hadoop# cat /proc/meminfo | grep MemTotal
+# MemTotal:        7934920 kB
+#<property>
+#    <name>yarn.nodemanager.resource.memory-mb</name>
+#    <value>3072</value>
+#</property>
+
+
+#root@master:/opt/hadoop/files-java/ContarPalabras# $HADOOP_HOME/sbin/yarn-daemon.sh stop resourcemanager
+#WARNING: Use of this script to stop YARN daemons is deprecated.
+#WARNING: Attempting to execute replacement "yarn --daemon stop" instead.
+#root@master:/opt/hadoop/files-java/ContarPalabras# $HADOOP_HOME/sbin/yarn-daemon.sh start resourcemanager
+#
+
+#root@worker:/etc/hadoop# $HADOOP_HOME/sbin/yarn-daemon.sh stop nodemanager
+#WARNING: Use of this script to stop YARN daemons is deprecated.
+#WARNING: Attempting to execute replacement "yarn --daemon stop" instead.
+#WARNING: nodemanager did not stop gracefully after 5 seconds: Trying to kill with kill -9
+#root@worker:/etc/hadoop# $HADOOP_HOME/sbin/yarn-daemon.sh start nodemanager
+#WARNING: Use of this script to start YARN daemons is deprecated.
+#WARNING: Attempting to execute replacement "yarn --daemon start" instead.
