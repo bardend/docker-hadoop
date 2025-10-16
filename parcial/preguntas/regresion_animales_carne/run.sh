@@ -1,50 +1,74 @@
 #!/bin/bash
-# -----------------------------------------------------------
-# Script de ejecución para la consulta de regresión lineal
-# Consulta: Relación entre número de animales machos y cantidad de carne producida
-# -----------------------------------------------------------
+# Script para compilar y ejecutar RegresionLinealCluster en Hadoop
 
-INPUT=/input/dataset_ganado_cleaned.csv
-OUTPUT1=/output/regresion_sumatorias
-OUTPUT2=/output/regresion_coeficientes
-OUTPUT3=/output/regresion_predicciones
-JAR_NAME=RegresionLinealMapReduce.jar
-CLASS_NAME=RegresionLinealMapReduce
+JAVA_FILE="RegresionLinealCluster.java"
+JAR_FILE="RegresionLinealCluster.jar"
+MAIN_CLASS="RegresionLinealCluster"
 
-# Limpiar salidas anteriores
-hdfs dfs -rm -r -f $OUTPUT1
-hdfs dfs -rm -r -f $OUTPUT2
-hdfs dfs -rm -r -f $OUTPUT3
+# Rutas en HDFS
+INPUT_PATH="/input/dataset_ganado_cleaned.csv"
+OUTPUT_PATH="/output/regresion_lineal"
 
 echo "==================== COMPILANDO ===================="
-hadoop com.sun.tools.javac.Main $CLASS_NAME.java
 
-echo "==================== CREANDO JAR ===================="
-jar cf $JAR_NAME $CLASS_NAME*.class
+# 1. Limpiar compilaciones anteriores
+rm -f *.class *.jar
 
-# Inicia el cronometro
-start=$(date +%s)
+# 2. Compilar el archivo Java con las librerías de Hadoop
+hadoop com.sun.tools.javac.Main $JAVA_FILE
 
-echo "==================== EJECUTANDO JOB ===================="
-hadoop jar $JAR_NAME $CLASS_NAME $INPUT $OUTPUT1 $OUTPUT2 $OUTPUT3
+if [ $? -ne 0 ]; then
+    echo "Error en la compilación"
+    exit 1
+fi
+echo "Compilación exitosa"
 
-# Finalizar el cronometro
-end=$(date +%s)
-runtime=$((end-start))
+# 3. Crear el archivo JAR
+jar cf "$JAR_FILE" *.class
 
-echo "==================== RESULTADOS ===================="
-echo "Coeficientes de regresión:"
-hdfs dfs -cat $OUTPUT2/part-r-00000
+if [ $? -ne 0 ]; then
+    echo "Error creando el JAR"
+    exit 1
+fi
+echo "JAR creado exitosamente: $JAR_FILE"
 
-echo ""
-echo "Predicciones generadas (x, y_real, y_predicha):"
-hdfs dfs -cat $OUTPUT3/part-r-00000 | head -n 10
+# 4. Limpiar directorios antiguos en HDFS
+echo "Limpiando rutas HDFS anteriores..."
+hdfs dfs -rm -r -f $OUTPUT_PATH 2>/dev/null
+hdfs dfs -rm -r -f /temp 2>/dev/null
 
-echo ""
-echo "Tiempo total de ejecución: ${runtime} segundos"
-echo ""
-echo "Consulta de regresión ejecutada correctamente."
-echo "Archivos de salida:"
-echo "  - Sumatorias:      $OUTPUT1"
-echo "  - Coeficientes:    $OUTPUT2"
-echo "  - Predicciones:    $OUTPUT3"
+# 5. Verificar existencia del dataset
+echo "Verificando dataset en HDFS..."
+hdfs dfs -test -e $INPUT_PATH
+if [ $? -ne 0 ]; then
+    echo "No se encontró $INPUT_PATH"
+    echo "Sube el archivo con: hdfs dfs -put dataset_ganado_0725_03.csv /input/"
+    exit 1
+fi
+echo "Dataset encontrado en $INPUT_PATH"
+
+# 6. Ejecutar el job y medir tiempo de ejecución
+echo "Ejecutando RegresionLinealCluster con 3 MapReduce anidados..."
+start_time=$(date +%s)
+
+hadoop jar "$JAR_FILE" "$MAIN_CLASS" "$INPUT_PATH" "$OUTPUT_PATH"
+
+exit_code=$?
+if [ $exit_code -eq 0 ]; then
+    end_time=$(date +%s)
+    elapsed=$((end_time - start_time))
+    echo "Job ejecutado exitosamente"
+    echo "Tiempo total de ejecución: ${elapsed}s"
+    echo "==================== RESULTADOS ===================="
+    hdfs dfs -cat $OUTPUT_PATH/part-r-00000 | head
+    echo "====================================================="
+else
+    echo "Error ejecutando el job (código: $exit_code)"
+    echo "==================== LOGS ===================="
+    # Intentar obtener logs de la aplicación
+    APP_ID=$(yarn application -list -appStates FINISHED 2>/dev/null | grep "regresion-" | tail -1 | awk '{print $1}')
+    if [ ! -z "$APP_ID" ]; then
+        yarn logs -applicationId $APP_ID | tail -100
+    fi
+    exit 1
+fi
