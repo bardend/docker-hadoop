@@ -1,0 +1,15 @@
+# Memoria por executor (debe ser menor que SPARK_WORKER_MEMORY)
+spark.executor.memory          ${SPARK_EXECUTOR_MEMORY:-800m}
+
+# Cores por executor
+spark.executor.cores           ${SPARK_EXECUTOR_CORES:-1}
+
+# Memoria del driver
+spark.driver.memory            ${SPARK_DRIVER_MEMORY:-800m}
+
+# Overhead de memoria (importante para evitar OOM)
+spark.executor.memoryOverhead  ${SPARK_EXECUTOR_MEMORY_OVERHEAD:-200m}
+spark.driver.memoryOverhead    ${SPARK_DRIVER_MEMORY_OVERHEAD:-200m}
+
+# Número de executors por worker
+spark.executor.instances       ${SPARK_EXECUTOR_INSTANCES:-1}
