@@ -1,4 +1,5 @@
-FROM bardend123/hadoop-base:v1
+FROM bardend123/hdfs-hadoop-spark-base:v2
+
 
 RUN mkdir -p /hadoop/dfs/name
 ENV HDFS_CONF_dfs_namenode_name_dir=file:///hadoop/dfs/name

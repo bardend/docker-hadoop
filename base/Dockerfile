@@ -56,4 +56,4 @@ COPY config-hadoop.sh /config-hadoop.sh
 RUN chmod +x config-hadoop.sh
 ENTRYPOINT ["/config-hadoop.sh"]
 #Comenta esto para herencia de los hijos
-CMD ["tail", "-f", "/dev/null"] 
+#CMD ["tail", "-f", "/dev/null"] 

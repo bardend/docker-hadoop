@@ -2,7 +2,7 @@ include ../.env
 export
 
 # Nombre de la imagen
-IMAGE_NAME=hdfs-hadoop-spark
+IMAGE_NAME=bardend123/hdfs-hadoop-spark-base
 IMAGE_TAG=v2
 
 .PHONY: build clean help
