@@ -1,0 +1,60 @@
+services:
+  master:
+    image: bardend123/hadoop-spark-master:v2
+    container_name: ${MASTER_HOST}
+    hostname: ${MASTER_HOST}
+    volumes:
+      - namenode-data:/hadoop/dfs/name
+    environment:  
+      - MASTER_HOST=master
+      - WORKERS=worker
+      #Hdfs
+      - REPLICATION_FACTOR=1
+      #Setting master
+      - SPARK_EXECUTOR_MEMORY=800
+      - SPARK_EXECUTOR_CORES=1
+      - SPARK_EXECUTOR_INSTANCES=1
+      #Setting worker
+      - SPARK_WORKER_MEMORY=1200m
+      - SPARK_WORKER_CORES=1
+
+    ports:
+      - "8080:${SPARK_MASTER_WEBUI_PORT}"  
+      - "9870:${HDFS_WEBUI_PORT}"                
+
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -f http://$${MASTER_HOST}:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    networks:
+      - hadoop-spark-network
+  worker:
+    image: bardend123/hadoop-spark-worker:v2
+    container_name: ${WORKER_HOST}
+    hostname: ${WORKER_HOST}
+    volumes:
+      - datanode-data:/hadoop/dfs/data
+    environment:  
+      - MASTER_HOST=master
+      - WORKERS=worker
+      #Hdfs
+      - REPLICATION_FACTOR=1
+      #Setting master
+      - SPARK_EXECUTOR_MEMORY=800
+      - SPARK_EXECUTOR_CORES=1
+      - SPARK_EXECUTOR_INSTANCES=1
+      #Setting worker
+      - SPARK_WORKER_MEMORY=1200m
+      - SPARK_WORKER_CORES=1
+    depends_on:
+      - master
+    networks:
+      - hadoop-spark-network
+networks:
+  hadoop-spark-network:
+volumes:
+  namenode-data:
+  datanode-data:

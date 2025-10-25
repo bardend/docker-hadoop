@@ -1,7 +1,6 @@
-export PYSPARK_PYTHON=/usr/bin/python3.10
-export PYSPARK_DRIVER_PYTHON=/usr/bin/python3.10
+export PYSPARK_PYTHON=/usr/bin/python3.9
+export PYSPARK_DRIVER_PYTHON=/usr/bin/python3.9
 
-export JAVA_HOME=${JAVA_HOME}
 export SPARK_MASTER_HOST=${SPARK_MASTER_HOST:-master}
 
 # Memoria
