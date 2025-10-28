@@ -1,0 +1,20 @@
+Apache Spark is a unified analytics engine for large-scale data processing.
+Spark provides high-level APIs in Java, Scala, Python and R.
+It also supports a rich set of higher-level tools including Spark SQL for SQL and structured data processing.
+MLlib for machine learning, GraphX for graph processing, and Structured Streaming for incremental computation and stream processing.
+Spark is designed to be fast and general purpose.
+Spark can run on Hadoop, Apache Mesos, Kubernetes, standalone, or in the cloud.
+It can access diverse data sources including HDFS, Apache Cassandra, Apache HBase, and Amazon S3.
+Spark is an open-source project that is used by thousands of companies for data processing.
+The project was started at UC Berkeley in 2009 and has since become one of the most active Apache projects.
+Spark continues to evolve with new features and improvements in every release.
+Apache Hadoop is a framework for distributed storage and processing of large data sets.
+Hadoop uses the MapReduce programming model for processing data.
+HDFS is the primary storage system used by Hadoop applications.
+Hadoop is highly scalable and can process petabytes of data.
+The Hadoop ecosystem includes many tools like Hive, Pig, HBase, and Sqoop.
+Big Data processing requires distributed computing frameworks like Spark and Hadoop.
+Data engineers use Spark and Hadoop to build data pipelines and analytics applications.
+Machine learning models can be trained on large datasets using Spark MLlib.
+Real-time data processing is possible with Spark Streaming.
+Cloud computing platforms provide managed services for running Spark and Hadoop clusters.

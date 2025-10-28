@@ -1,35 +1,14 @@
-DOCKER_NETWORK = hadoop-network
-HADOOP_HOME = /opt/hadoop
-WORK_PATH = $(HADOOP_HOME)/java-files/wordcount
-CLASS_JAVA = ContarPalabras
+# Cargar variables del archivo .env
+include .env
+export $(shell sed 's/=.*//' .env)
 
 wordcount:
-	docker compose -f docker-compose-hadoop.yml up -d
+	docker compose -f docker-compose-hadoop-spark.yml up -d
 	sleep 20
-	docker exec master bash -c "hdfs dfsadmin -safemode leave"
-	docker exec master mkdir -p $(WORK_PATH)/src
-	docker exec master mkdir -p $(WORK_PATH)/input
-	docker cp ./submit/src/. master:$(WORK_PATH)/src/
-	docker cp ./submit/input/. master:$(WORK_PATH)/input/
-	docker cp ./submit/start.sh master:$(WORK_PATH)/
-	docker exec master bash -c "hdfs dfs -mkdir -p /input"
-	docker exec master bash -c "hdfs dfs -put -f $(WORK_PATH)/input/in.txt /input/contar-palabras"
-	docker exec master bash -c "cd $(WORK_PATH) && chmod +x start.sh &&
-							    ./start.sh ./src/$(CLASS_JAVA) /input/contar-palabras /output/contar-palabras"
+	docker cp ./submit-pyspark/wordcount.py master:$(SPARK_HOME)/wordcount.py
+	docker cp ./submit-pyspark/data/string.txt master:$(HADOOP_HOME)/string.txt
+	docker exec master hdfs dfs -put -f $(HADOOP_HOME)/string.txt /string.txt
+	docker exec master $(SPARK_HOME)/bin/spark-submit --master spark://master:7077 $(SPARK_HOME)/wordcount.py
+
 down:
-	docker compose -f docker-compose-hadoop.yml down
-stop:
-	docker compose -f docker-compose-hadoop.yml stop
-restart:
-	docker compose -f docker-compose-hadoop.yml restart
-run:
-	docker exec master bash -c "hdfs dfsadmin -safemode leave"
-	docker exec master mkdir -p $(WORK_PATH)/src
-	docker exec master mkdir -p $(WORK_PATH)/input
-	docker cp ./submit/src/. master:$(WORK_PATH)/src/
-	docker cp ./submit/input/. master:$(WORK_PATH)/input/
-	docker cp ./submit/start.sh master:$(WORK_PATH)/
-	docker exec master bash -c "hdfs dfs -mkdir -p /input"
-	docker exec master bash -c "hdfs dfs -put -f $(WORK_PATH)/input/in.txt /input/contar-palabras"
-	docker exec master bash -c "cd $(WORK_PATH) && chmod +x start.sh && \
-							    ./start.sh ./src/$(CLASS_JAVA) /input/contar-palabras /output/contar-palabras"
+	docker compose -f docker-compose-hadoop-spark.yml down

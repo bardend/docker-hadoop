@@ -5,13 +5,13 @@ services:
     hostname: ${MASTER_HOST}
     volumes:
       - namenode-data:/hadoop/dfs/name
-    environment:  
+    environment:
       - MASTER_HOST=master
       - WORKERS=worker
       #Hdfs
       - REPLICATION_FACTOR=1
       #Setting master
-      - SPARK_EXECUTOR_MEMORY=800
+      - SPARK_EXECUTOR_MEMORY=800m
       - SPARK_EXECUTOR_CORES=1
       - SPARK_EXECUTOR_INSTANCES=1
       #Setting worker
@@ -19,11 +19,11 @@ services:
       - SPARK_WORKER_CORES=1
 
     ports:
-      - "8080:${SPARK_MASTER_WEBUI_PORT}"  
-      - "9870:${HDFS_WEBUI_PORT}"                
+      - "8080:${SPARK_MASTER_WEBUI_PORT}"
+      - "9870:${HDFS_WEBUI_PORT}"
 
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl -f http://$${MASTER_HOST}:8080"]
+      test: [ "CMD", "sh", "-c", "curl -f http://$${MASTER_HOST}:8080" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -37,13 +37,13 @@ services:
     hostname: ${WORKER_HOST}
     volumes:
       - datanode-data:/hadoop/dfs/data
-    environment:  
+    environment:
       - MASTER_HOST=master
       - WORKERS=worker
       #Hdfs
       - REPLICATION_FACTOR=1
       #Setting master
-      - SPARK_EXECUTOR_MEMORY=800
+      - SPARK_EXECUTOR_MEMORY=800m
       - SPARK_EXECUTOR_CORES=1
       - SPARK_EXECUTOR_INSTANCES=1
       #Setting worker
